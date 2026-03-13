@@ -1,0 +1,15 @@
+{
+  "name": "Plum ecoMAX 360",
+  "short_name": "ecoMAX",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000c1a",
+  "theme_color": "#003d4d",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/595/595514.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
