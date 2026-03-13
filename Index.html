@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plum ecoMAX 360 - Expert Mix Full Settings</title>
+<style>
+/* ===== SCREEN STYLES ===== */
+:root {
+    --bg: #000c1a; --text-en: #00e5ff; --text-hu: #ffff00;
+    --border: #003d4d; --btn-bg: #1a1a1a; --selected-bg: #ffffff;
+}
+body { font-family: 'Courier New', monospace; background: #222; color: var(--text-en); margin:0; padding:10px; display:flex; flex-direction:column; align-items:center;}
+.device { width:95%; max-width:400px; background:#333; padding:15px; border-radius:20px; border:4px solid #555; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+.screen { background: var(--bg); min-height:540px; border:2px solid #000; border-radius:5px; display:flex; flex-direction:column; position:relative; overflow:hidden;}
+.header { background: var(--border); color:#fff; padding:12px; text-align:center; font-size:1.1em; font-weight:bold; border-bottom:2px solid #000; text-transform:uppercase;}
+.menu-list { flex-grow:1; overflow-y:auto;}
+.menu-item { padding:10px 15px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; cursor:pointer;}
+.menu-item:hover { background: var(--selected-bg); color:#000 !important;}
+.menu-item:hover span { color:#000 !important;}
+.labels { display:flex; flex-direction:column; flex-grow:1;}
+.en { font-size:0.95em; font-weight:bold; color:var(--text-en);}
+.hu { font-size:0.75em; font-weight:bold; color:var(--text-hu); text-transform:uppercase;}
+.val { font-size:1.0em; font-weight:bold; color:#fff; margin-left:10px; text-align:right;}
+.nav { display:flex; gap:5px; margin-bottom:10px; width:95%; max-width:400px; flex-wrap:wrap;}
+.nav-btn { flex:1; padding:12px; background:var(--btn-bg); color:#fff; border:1px solid #666; border-radius:5px; cursor:pointer; font-weight:bold; font-size:0.85em; min-width:70px;}
+.nav-btn:hover { background:#444; }
+.nav-btn.pdf-btn { background:#1a4a1a; border-color:#00aa44; color:#00ff66;}
+.nav-btn.pdf-btn:hover { background:#2a6a2a; }
+.login-box { padding:15px; text-align:center; margin-top:20px; border:1px solid var(--border); border-radius:10px; background: rgba(0,61,77,0.2);}
+.login-box input { width:60%; padding:8px; margin:10px 0; background:#000; color:var(--text-hu); border:1px solid var(--text-en); text-align:center; font-size:1.2em;}
+
+/* ===== PRINT / PDF STYLES ===== */
+#printArea { display:none; }
+
+@media print {
+    body { background: #fff !important; color: #000 !important; font-family: Arial, sans-serif; margin:0; padding:0; display:block; align-items:unset;}
+    .device, .nav, #content-wrapper { display:none !important; }
+    #printArea { display:block !important; }
+    
+    .pdf-page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 15mm 15mm 15mm 15mm;
+        box-sizing: border-box;
+        page-break-after: always;
+        background: #fff;
+    }
+    .pdf-page:last-child { page-break-after: avoid; }
+    
+    .pdf-header {
+        border-bottom: 3px solid #003d4d;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    .pdf-header h1 {
+        font-size: 18pt;
+        margin: 0 0 4px 0;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+    .pdf-header .subtitle {
+        font-size: 10pt;
+        color: #555;
+        font-family: Arial, sans-serif;
+    }
+    .pdf-header .pellet-badge {
+        display: inline-block;
+        background: #003d4d;
+        color: #fff;
+        padding: 4px 14px;
+        border-radius: 12px;
+        font-size: 11pt;
+        font-weight: bold;
+        float: right;
+        font-family: Arial, sans-serif;
+    }
+    .pdf-meta {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+        font-size: 9pt;
+        color: #444;
+        font-family: Arial, sans-serif;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 4px;
+        background: #f9f9f9;
+    }
+    .pdf-meta span { flex:1; }
+    
+    .pdf-section {
+        margin-bottom: 12px;
+        break-inside: avoid;
+    }
+    .pdf-section-title {
+        background: #003d4d;
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 10pt;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        border-radius: 3px 3px 0 0;
+        margin-bottom: 0;
+    }
+    .pdf-section-title .section-en { font-size: 9pt; opacity:0.85; font-weight:normal; }
+    
+    table.pdf-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+        font-family: Arial, sans-serif;
+    }
+    table.pdf-table tr:nth-child(even) { background: #f0f8ff; }
+    table.pdf-table tr:nth-child(odd) { background: #fff; }
+    table.pdf-table td {
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        vertical-align: middle;
+    }
+    table.pdf-table td.td-en { font-size:9pt; color:#000; font-weight:bold; width:35%; }
+    table.pdf-table td.td-hu { font-size:8pt; color:#444; width:35%; }
+    table.pdf-table td.td-val { font-size:10pt; font-weight:bold; color:#003d4d; text-align:right; width:15%; }
+    table.pdf-table td.td-note { font-size:7.5pt; color:#888; width:15%; font-style:italic; }
+    
+    .pdf-footer {
+        position: fixed;
+        bottom: 10mm;
+        left: 15mm;
+        right: 15mm;
+        border-top: 1px solid #ccc;
+        padding-top: 5px;
+        font-size: 7.5pt;
+        color: #999;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: space-between;
+    }
+    .pdf-sign-box {
+        margin-top: 15px;
+        display: flex;
+        gap: 20px;
+    }
+    .sign-field {
+        flex: 1;
+        border-top: 1px solid #000;
+        padding-top: 4px;
+        font-size: 8pt;
+        color: #555;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+    .section-2col {
+        display: flex;
+        gap: 8px;
+    }
+    .section-2col .pdf-section { flex:1; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV BAR ===== -->
+<div class="nav" id="content-wrapper">
+    <button class="nav-btn" onclick="goBack()">← VISSZA</button>
+    <button class="nav-btn" onclick="goHome()">🏠 FŐMENÜ</button>
+    <button class="nav-btn" onclick="resetCurrent()" title="Menü reset">🔄 RESET</button>
+    <button class="nav-btn" onclick="resetAll()" title="Gyári beállítások">⚠️ GYÁRI</button>
+    <button class="nav-btn pdf-btn" onclick="showPdfOptions()" title="Szerviz lap PDF">🖨️ PDF NYOMTAT</button>
+</div>
+
+<!-- ===== DEVICE SCREEN ===== -->
+<div class="device">
+    <div class="screen">
+        <div class="header" id="title">MAIN MENU</div>
+        <div id="content" class="menu-list"></div>
+    </div>
+</div>
+
+<!-- ===== PRINT AREA (rejtett, csak nyomtatáskor látható) ===== -->
+<div id="printArea"></div>
+
+<script>
+// ===== ALAP BEÁLLÍTÁSOK (DEFAULT) =====
+const defaultMenuData = {
+    "MAIN": { title: "Main Menu", items: [
+        { en:"Information", hu:"Információ", link:"INFO" },
+        { en:"Current Fuel Mix", hu:"Aktuális Keverék", link:"S_FUEL_MIX" },
+        { en:"Boiler settings", hu:"Kazán beállítások", link:"BOILER" },
+        { en:"Mixer settings", hu:"Keverő szelep beállítások", link:"MIXER" },
+        { en:"Summer/Winter", hu:"Nyár/Tél", val:"WINTER", editable: true },
+        { en:"Manual control", hu:"Kézi vezérlés", link:"MANUAL" },
+        { en:"Service Settings", hu:"Szerviz beállítások", link:"SERVICE_LOGIN" }
+    ]},
+    "INFO": { title: "Information", items: [
+        { en:"Boiler temp.", hu:"Kazán hőmérséklet", val:"55°C" },
+        { en:"Flame", hu:"Láng", val:"98%" }
+    ]},
+    "S_FUEL_MIX": { title:"Fuel Mix Details", items:[
+        { en:"Mix Name", hu:"Keverék neve", val:"Fa-Szalma Mix", editable: true },
+        { en:"Straw Ratio", hu:"Szalma arány (%)", val:"50%", editable: true },
+        { en:"Wood Ratio", hu:"Fa pellet arány (%)", val:"50%", editable: true },
+        { en:"Combustion Quality", hu:"Égés minősége (1-10)", val:"9", editable: true }
+    ]},
+    "SERVICE_LOGIN": { title:"Service Login", isPassword:true },
+    "SERVICE_MAIN": { title:"Service Settings", items: [] },
+    
+    "S_BURNER": { title:"Burner settings", items: [
+        { en:"Output modulation", hu:"Teljesítmény moduláció", link:"S_BURN_MOD" },
+        { en:"Firing-up", hu:"Begyújtás", link:"S_BURN_FIRE" },
+        { en:"Operation setup", hu:"Üzemi beállítások", link:"S_BURN_OPER" },
+        { en:"Burning off", hu:"Kiégetés", link:"S_BURN_OFF" },
+        { en:"Cleaning", hu:"Tisztítás", link:"S_CLEANING" },
+        { en:"Supervision", hu:"Felügyelet", link:"S_SUPERVISION" },
+        { en:"Grate", hu:"Rostély", link:"S_GRATE" },
+        { en:"Min. airflow output", hu:"Min. légáramlás", val:"22%", editable: true },
+        { en:"Fuel detection time", hu:"Üzemanyag érz. idő", val:"2m", editable: true },
+        { en:"Max. burner temp.", hu:"Max. égőfej hőm.", val:"85°C", editable: true }
+    ]},
+    "S_BURN_MOD": { title:"Output modulation", items:[
+        { en:"MAX Boiler output", hu:"MAX Kazán teljesítmény", val:"100%", editable: true },
+        { en:"MAX Blow-in output", hu:"MAX Befúvás teljesítmény", val:"65%", editable: true },
+        { en:"Average hysteresis H2", hu:"Átlagos hiszterézis H2", val:"5.0°C", editable: true },
+        { en:"Aver. boiler output", hu:"Átlagos kazán teljesítmény", val:"50%", editable: true },
+        { en:"Average blow-in output", hu:"Átlagos befúvás teljesítmény", val:"40%", editable: true },
+        { en:"MIN Hysteresis H1", hu:"MIN Hiszterézis H1", val:"2.0°C", editable: true },
+        { en:"MIN Boiler output", hu:"MIN Kazán teljesítmény", val:"20%", editable: true },
+        { en:"MIN Blow-in output", hu:"MIN Befúvás teljesítmény", val:"15%", editable: true },
+        { en:"Boiler hysteresis Hk", hu:"Kazán hiszterézis Hk", val:"2.0°C", editable: true },
+        { en:"Min. boiler output FL", hu:"Min. kazán teljesítmény FL", val:"30%", editable: true },
+        { en:"Max. boiler output FL", hu:"Max. kazán teljesítmény FL", val:"80%", editable: true },
+        { en:"Blow-in output - grate", hu:"Befúvás telj. - rostély", val:"25%", editable: true },
+        { en:"Feeder", hu:"Adagoló ciklusidő", val:"12s", editable: true }
+    ]},
+    "S_BURN_FIRE": { title:"Firing-up", items:[
+        { en:"Ignition test time", hu:"Gyújtás teszt ideje", val:"45s", editable: true },
+        { en:"Fuel dose", hu:"Gyújtási adag", val:"120g", editable: true },
+        { en:"Flame detection", hu:"Láng érzékelés", val:"250s", editable: true },
+        { en:"Firing-up airflow", hu:"Begyújtási légáramlás", val:"35%", editable: true },
+        { en:"Firing-up time", hu:"Begyújtási idő", val:"10m", editable: true },
+        { en:"Blow-in inten. af. infl.", hu:"Befúvás gyújtás után", val:"40%", editable: true },
+        { en:"Blow-in p. after infl.", hu:"Befúvás ideje gyújtás után", val:"2m", editable: true },
+        { en:"Igniter period", hu:"Gyújtó periódus", val:"300s", editable: true },
+        { en:"Worktime min. power", hu:"Üzemidő min. telj.", val:"5m", editable: true }
+    ]},
+    "S_BURN_OPER": { title:"Operation setup", items:[
+        { en:"Thermostat mode", hu:"Termosztát mód", val:"Universal", editable: true },
+        { en:"Cycle time OPERAT.", hu:"Üzemi ciklusidő", val:"20s", editable: true },
+        { en:"Fuel calorific value", hu:"Üzemanyag fűtőérték", val:"4.5kWh/kg", editable: true },
+        { en:"Energy density", hu:"Energiasűrűség", val:"0.6kg/dm3", editable: true },
+        { en:"Stoker ext.", hu:"Külső adagoló", val:"100%", editable: true },
+        { en:"Stoker ext. BURN.OFF", hu:"Külső adagoló KIÉG.", val:"120s", editable: true }
+    ]},
+    "S_BURN_OFF": { title:"Burning off", items:[
+        { en:"Burning off max. time", hu:"Kiégetés max. ideje", val:"10m", editable: true },
+        { en:"Burning off min. time", hu:"Kiégetés min. ideje", val:"2m", editable: true },
+        { en:"Air flush intensity", hu:"Légöblítés intenzitása", val:"80%", editable: true },
+        { en:"Air flush period", hu:"Légöblítés időtartama", val:"20s", editable: true },
+        { en:"Air flush interval", hu:"Légöblítés intervalluma", val:"60s", editable: true },
+        { en:"Air flush start", hu:"Légöblítés kezdete", val:"10s", editable: true },
+        { en:"Air flush stop", hu:"Légöblítés vége", val:"5s", editable: true },
+        { en:"Burning off", hu:"Kiégetés", val:"BE", action:"toggle" }
+    ]},
+    "S_CLEANING": { title:"Cleaning", items:[
+        { en:"Poker p. before inflame", hu:"Tisztító p. begyújtás előtt", val:"20s", editable: true },
+        { en:"Poker p. after bur.off", hu:"Tisztító p. kiégetés után", val:"30s", editable: true },
+        { en:"Cleaning airflow", hu:"Tisztítási légáramlás", val:"75%", editable: true },
+        { en:"Cleaning time", hu:"Tisztítási idő", val:"45s", editable: true },
+        { en:"Cleaning pause", hu:"Tisztítási szünet", val:"1.5h", editable: true }
+    ]},
+    "S_SUPERVISION": { title:"Supervision", items:[
+        { en:"Supervision time", hu:"Felügyeleti idő", val:"20m", editable: true },
+        { en:"Boiler output", hu:"Kazán teljesítmény", val:"10%", editable: true },
+        { en:"Blow-in output", hu:"Befúvás teljesítmény", val:"15%", editable: true },
+        { en:"Cycle time", hu:"Ciklusidő", val:"10s", editable: true }
+    ]},
+    "S_GRATE": { title:"Grate settings", items:[
+        { en:"Flush time Superv.", hu:"Öblítési idő Felügy.", val:"10s", editable: true },
+        { en:"Flush period Superv.", hu:"Öblítési ciklus Felügy.", val:"1h", editable: true }
+    ]},
+    "S_BOILER": { title:"Boiler settings (Service)", items:[
+        { en:"Boiler set temp.", hu:"Kazán beállított hőm.", val:"60°C", editable: true },
+        { en:"Max. boiler temp.", hu:"Max. kazán hőm.", val:"85°C", editable: true },
+        { en:"Min. boiler temp.", hu:"Min. kazán hőm.", val:"40°C", editable: true },
+        { en:"Boiler hysteresis", hu:"Kazán hiszterézis", val:"5.0°C", editable: true },
+        { en:"Pump hysteresis", hu:"Szivattyú hiszterézis", val:"3.0°C", editable: true },
+        { en:"Antifreeze temp.", hu:"Fagyvédelmi hőm.", val:"10°C", editable: true }
+    ]},
+    "S_CH_HUW": { title:"CH and HUW settings", items:[
+        { en:"CH set temp.", hu:"Fűtés beáll. hőm.", val:"45°C", editable: true },
+        { en:"HUW set temp.", hu:"HMV beáll. hőm.", val:"50°C", editable: true },
+        { en:"HUW hysteresis", hu:"HMV hiszterézis", val:"5.0°C", editable: true },
+        { en:"HUW priority", hu:"HMV prioritás", val:"BE", action:"toggle" },
+        { en:"CH pump delay", hu:"Fűtés sziv. késleltetés", val:"60s", editable: true },
+        { en:"Summer mode temp.", hu:"Nyári mód hőm.", val:"20°C", editable: true }
+    ]},
+    "S_COUNTERS": { title:"Service counters", items:[
+        { en:"Total work hours", hu:"Összes üzemóra", val:"1250h" },
+        { en:"Fuel consumed", hu:"Felhasznált üzemanyag", val:"4500kg" },
+        { en:"Ignitions count", hu:"Begyújtások száma", val:"320" },
+        { en:"Cleaning cycles", hu:"Tisztítási ciklusok", val:"1580" },
+        { en:"Last service", hu:"Utolsó szerviz", val:"2024-10" },
+        { en:"Reset counters", hu:"Számlálók nullázása", val:"NEM", action:"toggle" }
+    ]},
+    "MANUAL": { title:"Manual control", items:[
+        { en:"Fan", hu:"Ventilátor", val:"KI", action:"toggle" },
+        { en:"Feeder", hu:"Külső adagoló", val:"KI", action:"toggle" },
+        { en:"Stoker", hu:"Belső adagoló", val:"KI", action:"toggle" },
+        { en:"Igniter", hu:"Gyújtó", val:"KI", action:"toggle" },
+        { en:"Boiler pump", hu:"Kazán szivattyú", val:"KI", action:"toggle" },
+        { en:"HUW pump", hu:"HMV szivattyú", val:"KI", action:"toggle" },
+        { en:"Mixer pump", hu:"Keverő szivattyú", val:"KI", action:"toggle" },
+        { en:"Grate", hu:"Rostély tisztítás", val:"KI", action:"toggle" }
+    ]}
+};
+
+// ===== SECURITY & VALIDATION =====
+const validators = {
+    '%': {regex: /^\d{1,3}%?$/, min:0, max:100},
+    '°C': {regex: /^\d{1,3}(\.\d)?°?C?$/, min:0, max:120},
+    's': {regex: /^\d{1,4}s?$/, min:0, max:9999},
+    'm': {regex: /^\d{1,3}m?$/, min:0, max:999},
+    'h': {regex: /^\d{1,2}(\.\d)?h?$/, min:0, max:99}
+};
+
+function validateVal(oldVal, newVal) {
+    const unit = Object.keys(validators).find(u => oldVal.includes(u));
+    if (!unit) return newVal.length <= 50 ? newVal : null;
+    const v = validators[unit];
+    const num = parseFloat(newVal);
+    return v.regex.test(newVal) && num >= v.min && num <= v.max ? newVal : null;
+}
+
+function sanitizeMenuData(data) {
+    if(!data || typeof data !== 'object') return null;
+    for(const [k, menu] of Object.entries(data)) {
+        if(menu.items) {
+            menu.items.forEach(item => {
+                for(const field of ['en', 'hu', 'val']) {
+                    if(item[field]) item[field] = String(item[field]).replace(/[<>"'&]/g, '');
+                }
+                if(item.link && !defaultMenuData[item.link]) delete item.link;
+            });
+        }
+    }
+    return data;
+}
+
+// ===== STATE =====
+let history = ["MAIN"];
+let selectedPellet = null;
+let menuData = sanitizeMenuData(JSON.parse(localStorage.getItem('plum_expert_full_v1'))) || JSON.parse(JSON.stringify(defaultMenuData));
+const PROFILES_KEY = 'plum_profiles_v1';
+const SERVICE_DATA_KEY = 'plum_service_data_by_pellet_v1';
+
+let serviceDataByPellet = {};
+
+const SERVICE_MENU_KEYS = ['SERVICE_MAIN', 'S_BURNER', 'S_BURN_MOD', 'S_BURN_FIRE', 'S_BURN_OPER', 'S_BURN_OFF', 'S_CLEANING', 'S_SUPERVISION', 'S_GRATE', 'S_BOILER', 'S_CH_HUW', 'S_COUNTERS'];
+
+function initServiceData() {
+    try {
+        serviceDataByPellet = JSON.parse(localStorage.getItem(SERVICE_DATA_KEY)) || {};
+    } catch {
+        serviceDataByPellet = {};
+    }
+    const pelletTypes = ['FA', 'SZALMA', 'MIX'];
+    pelletTypes.forEach(pellet => {
+        if (!serviceDataByPellet[pellet]) {
+            serviceDataByPellet[pellet] = JSON.parse(JSON.stringify(defaultMenuData));
+        }
+    });
+}
+
+function saveServiceData() {
+    localStorage.setItem(SERVICE_DATA_KEY, JSON.stringify(serviceDataByPellet));
+}
+
+function saveAll() {
+    localStorage.setItem('plum_expert_full_v1', JSON.stringify(menuData));
+    if (selectedPellet && SERVICE_MENU_KEYS.includes(history[history.length - 1])) {
+        SERVICE_MENU_KEYS.forEach(key => {
+            serviceDataByPellet[selectedPellet][key] = menuData[key];
+        });
+        saveServiceData();
+    }
+}
+
+function resetCurrent() {
+    const key = history[history.length - 1];
+    if (!defaultMenuData[key]) return;
+    if (!confirm(`"${menuData[key].title}" — visszaállítás alapértelmezettre?`)) return;
+    menuData[key] = JSON.parse(JSON.stringify(defaultMenuData[key]));
+    saveAll();
+    renderMenu(key);
+}
+
+function resetAll() {
+    if (!confirm("MINDEN beállítás visszaáll gyári értékre. Biztos?")) return;
+    menuData = JSON.parse(JSON.stringify(defaultMenuData));
+    selectedPellet = null;
+    history = ["MAIN"];
+    saveAll();
+    renderMenu("MAIN");
+}
+
+function saveProfile(name) {
+    if (!name || name.length > 30) { alert("Profil neve 1-30 karakter!"); return; }
+    const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {};
+    profiles[name] = { data: JSON.parse(JSON.stringify(menuData)), ts: Date.now() };
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    alert(`Profil mentve: "${name}"`);
+}
+
+function loadProfile(name) {
+    const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {};
+    if (!profiles[name]) { alert("Profil nem található!"); return; }
+    if (!confirm(`"${name}" profil betöltése?`)) return;
+    menuData = JSON.parse(JSON.stringify(profiles[name].data));
+    saveAll();
+    goHome();
+}
+
+function deleteProfile(name) {
+    if (!confirm(`"${name}" profil törlése?`)) return;
+    const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {};
+    delete profiles[name];
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    alert("Profil törölve!");
+}
+
+function loadServiceMenuForPellet(pellet){
+    selectedPellet = pellet;
+    SERVICE_MENU_KEYS.forEach(key => {
+        if(serviceDataByPellet[pellet] && serviceDataByPellet[pellet][key]) {
+            menuData[key] = JSON.parse(JSON.stringify(serviceDataByPellet[pellet][key]));
+        }
+    });
+    menuData["SERVICE_MAIN"].items = [
+        { en:"Burner settings", hu:"Égőfej beállítások", link:"S_BURNER" },
+        { en:"Boiler settings", hu:"Kazán beállítások", link:"S_BOILER" },
+        { en:"CH and HUW settings", hu:"Fűtés és HMV beállítások", link:"S_CH_HUW" },
+        { en:"Show advanced setup", hu:"Haladó beállítások", val:"NEM", editable: true },
+        { en:"Service counters", hu:"Szerviz számlálók", link:"S_COUNTERS" },
+        { en:"Fuel settings", hu:"Üzemanyag beállítások", link:"S_FUEL_MIX" },
+        { en:"Log out", hu:"Kijelentkezés", action:"logout" }
+    ];
+    renderMenu("SERVICE_MAIN");
+}
+
+function renderMenu(key){
+    const menu = menuData[key];
+    if(!menu) {
+        document.getElementById("content").innerHTML = "<div class='menu-item'><span class='hu'>Hamarosan (Bővíthető)...</span></div>";
+        return;
+    }
+    const container = document.getElementById("content");
+    const titleEl = document.getElementById("title");
+    container.innerHTML = "";
+
+    if(key==="SERVICE_MAIN" && !selectedPellet){
+        titleEl.innerText = "Válassz pellet típust";
+        [{label:"🌲 FA",key:"FA"},{label:"🌾 SZALMA",key:"SZALMA"},{label:"🔀 MIX (Javasolt)",key:"MIX"}].forEach(p=>{
+            const div = document.createElement("div");
+            div.className="menu-item";
+            div.textContent = p.label;
+            div.onclick=()=>{
+                selectedPellet=p.key;
+                loadServiceMenuForPellet(p.key);
+                if(history[history.length-1] !== "SERVICE_MAIN") history.push("SERVICE_MAIN");
+            };
+            container.appendChild(div);
+        });
+        return;
+    }
+
+    titleEl.innerText = menu.title;
+
+    if(menu.isPassword){
+        container.innerHTML = `<div class="login-box"><span class="hu">SZERVIZ KÓD</span><br><input type="password" id="pw" maxlength="4" placeholder="****"><br><br><button class="nav-btn" onclick="checkPw()">BELÉPÉS</button></div>`;
+        return;
+    }
+
+    (menu.items || []).forEach(item=>{
+        const div = document.createElement("div");
+        div.className="menu-item";
+        div.onclick = ()=>{
+            if(item.link){
+                history.push(item.link);
+                renderMenu(item.link);
+            }
+            else if(item.action==="logout"){
+                if (selectedPellet && SERVICE_MENU_KEYS.includes(key)) {
+                    SERVICE_MENU_KEYS.forEach(k => {
+                        serviceDataByPellet[selectedPellet][k] = menuData[k];
+                    });
+                    saveServiceData();
+                }
+                goHome();
+                selectedPellet=null;
+            }
+            else if(item.action==="toggle"){
+                item.val = (item.val==="KI" || item.val==="OFF" || item.val==="NEM") ? "BE":"KI";
+                if (selectedPellet && SERVICE_MENU_KEYS.includes(key)) {
+                    serviceDataByPellet[selectedPellet][key] = menuData[key];
+                    saveServiceData();
+                } else {
+                    saveAll();
+                }
+                renderMenu(key);
+            }
+            else if(item.val !== undefined && item.editable === true) {
+                let newVal = prompt(`${item.hu} módosítása:`, item.val);
+                if(newVal !== null) {
+                    const validated = validateVal(item.val, newVal);
+                    if(validated !== null) {
+                        item.val = validated;
+                        if (selectedPellet && SERVICE_MENU_KEYS.includes(key)) {
+                            serviceDataByPellet[selectedPellet][key] = menuData[key];
+                            saveServiceData();
+                        } else {
+                            saveAll();
+                        }
+                        renderMenu(key);
+                    } else {
+                        alert("Érvénytelen érték! (Tartomány vagy formátum hiba)");
+                    }
+                }
+            }
+        };
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "labels";
+        
+        const enSpan = document.createElement("span");
+        enSpan.className = "en";
+        enSpan.textContent = item.en;
+        
+        const huSpan = document.createElement("span");
+        huSpan.className = "hu";
+        huSpan.textContent = item.hu;
+        
+        labelDiv.appendChild(enSpan);
+        labelDiv.appendChild(huSpan);
+        div.appendChild(labelDiv);
+        
+        if(item.val !== undefined && item.val !== null){
+            const valSpan = document.createElement("span");
+            valSpan.className = "val";
+            valSpan.textContent = item.val;
+            div.appendChild(valSpan);
+        }
+        container.appendChild(div);
+    });
+}
+
+function checkPw(){
+    const SERVICE_PASSWORD = "0000";
+    if(document.getElementById("pw").value === SERVICE_PASSWORD){
+        selectedPellet=null;
+        if(history[history.length-1] !== "SERVICE_MAIN") history.push("SERVICE_MAIN");
+        renderMenu("SERVICE_MAIN");
+    } else {
+        alert("Hibás kód!");
+        document.getElementById("pw").value = "";
+    }
+}
+
+function goBack(){
+    if(history.length>1){
+        const currentKey = history[history.length - 1];
+        if (selectedPellet && SERVICE_MENU_KEYS.includes(currentKey)) {
+            SERVICE_MENU_KEYS.forEach(key => {
+                serviceDataByPellet[selectedPellet][key] = menuData[key];
+            });
+            saveServiceData();
+        }
+        history.pop();
+        renderMenu(history[history.length-1]);
+    }
+}
+
+function goHome(){
+    const currentKey = history[history.length - 1];
+    if (selectedPellet && SERVICE_MENU_KEYS.includes(currentKey)) {
+        SERVICE_MENU_KEYS.forEach(key => {
+            serviceDataByPellet[selectedPellet][key] = menuData[key];
+        });
+        saveServiceData();
+    }
+    history=["MAIN"];
+    selectedPellet=null;
+    renderMenu("MAIN");
+}
+
+// ===================================================================
+// ===== PDF / NYOMTATÁS FUNKCIÓ =====
+// ===================================================================
+
+function showPdfOptions() {
+    const choice = confirm(
+        "🖨️ SZERVIZ LAP NYOMTATÁS\n\n" +
+        "OK = MIND A 3 TÍPUS egyszerre (FA + SZALMA + MIX)\n" +
+        "MÉGSE = Csak az AKTUÁLISAN betöltött típus"
+    );
+    if (choice) {
+        printServiceSheet('ALL');
+    } else {
+        // Ha nincs betöltve pellet típus
+        const pType = selectedPellet || 'MIX';
+        printServiceSheet(pType);
+    }
+}
+
+function getDataForPellet(pelletKey) {
+    // Visszaadja az adott pellet típus összes szerviz adatát
+    if (serviceDataByPellet[pelletKey]) {
+        return serviceDataByPellet[pelletKey];
+    }
+    return defaultMenuData;
+}
+
+function buildSectionTable(data, menuKey) {
+    const menu = data[menuKey];
+    if (!menu || !menu.items || menu.items.length === 0) return '';
+    
+    // Csak azok a sorok kerülnek be, amiknek van értékük (val), és nincs link
+    const settingItems = menu.items.filter(item => item.val !== undefined && !item.link);
+    if (settingItems.length === 0) return '';
+    
+    let rows = settingItems.map(item => {
+        const editableIcon = item.editable ? '✏️' : '';
+        return `<tr>
+            <td class="td-en">${item.en}</td>
+            <td class="td-hu">${item.hu}</td>
+            <td class="td-val">${item.val}</td>
+            <td class="td-note">${editableIcon}</td>
+        </tr>`;
+    }).join('');
+    
+    return `
+    <div class="pdf-section">
+        <div class="pdf-section-title">
+            ${menu.title}
+            <span class="section-en"> &nbsp;|&nbsp; ${menuKey}</span>
+        </div>
+        <table class="pdf-table">
+            <thead>
+                <tr style="background:#e8f4f8;">
+                    <td class="td-en" style="font-weight:bold;color:#003d4d;">Paraméter (EN)</td>
+                    <td class="td-hu" style="font-weight:bold;color:#003d4d;">Paraméter (HU)</td>
+                    <td class="td-val" style="font-weight:bold;color:#003d4d;text-align:right;">Érték</td>
+                    <td class="td-note" style="font-weight:bold;color:#003d4d;">Típus</td>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`;
+}
+
+function buildPelletPage(pelletKey, pageNum, totalPages) {
+    const data = getDataForPellet(pelletKey);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('hu-HU') + ' ' + now.toLocaleTimeString('hu-HU', {hour:'2-digit', minute:'2-digit'});
+    
+    const pelletNames = { FA: '🌲 FA (Fa pellet)', SZALMA: '🌾 SZALMA (Szalma pellet)', MIX: '🔀 MIX (Fa + Szalma keverék)' };
+    const pelletName = pelletNames[pelletKey] || pelletKey;
+
+    // 1. OLDAL: Égőfej beállítások
+    const page1 = `
+    <div class="pdf-page">
+        <div class="pdf-header">
+            <span class="pellet-badge">${pelletKey}</span>
+            <h1>Plum ecoMAX 360 — Szerviz Lap</h1>
+            <div class="subtitle">Üzemanyag típus: <strong>${pelletName}</strong> &nbsp;|&nbsp; Dátum: ${dateStr}</div>
+        </div>
+        <div class="pdf-meta">
+            <span>📋 Eszköz: Plum ecoMAX 360</span>
+            <span>⚙️ Típus: Expert Mix Controller</span>
+            <span>📅 Kinyomtatva: ${dateStr}</span>
+            <span>📄 Oldal: 1/2</span>
+        </div>
+        
+        ${buildSectionTable(data, 'S_BURNER')}
+        ${buildSectionTable(data, 'S_BURN_MOD')}
+        ${buildSectionTable(data, 'S_BURN_FIRE')}
+        
+        <div class="pdf-footer">
+            <span>Plum ecoMAX 360 — Szerviz Lap | ${pelletName}</span>
+            <span>Oldal 1/2 | ${dateStr}</span>
+        </div>
+    </div>`;
+    
+    // 2. OLDAL: Üzemi, Kiégetés, Tisztítás, Felügyelet, Kazán, CH/HMV, Számlálók
+    const page2 = `
+    <div class="pdf-page">
+        <div class="pdf-header">
+            <span class="pellet-badge">${pelletKey}</span>
+            <h1>Plum ecoMAX 360 — Szerviz Lap (folytatás)</h1>
+            <div class="subtitle">Üzemanyag típus: <strong>${pelletName}</strong> &nbsp;|&nbsp; Dátum: ${dateStr}</div>
+        </div>
+        <div class="pdf-meta">
+            <span>📋 Eszköz: Plum ecoMAX 360</span>
+            <span>⚙️ Típus: Expert Mix Controller</span>
+            <span>📅 Kinyomtatva: ${dateStr}</span>
+            <span>📄 Oldal: 2/2</span>
+        </div>
+        
+        ${buildSectionTable(data, 'S_BURN_OPER')}
+        ${buildSectionTable(data, 'S_BURN_OFF')}
+        ${buildSectionTable(data, 'S_CLEANING')}
+        ${buildSectionTable(data, 'S_SUPERVISION')}
+        ${buildSectionTable(data, 'S_GRATE')}
+        ${buildSectionTable(data, 'S_BOILER')}
+        ${buildSectionTable(data, 'S_CH_HUW')}
+        ${buildSectionTable(data, 'S_COUNTERS')}
+        ${buildSectionTable(data, 'S_FUEL_MIX')}
+        
+        <div class="pdf-sign-box">
+            <div class="sign-field">Szervizes neve / aláírása</div>
+            <div class="sign-field">Ügyfél neve / aláírása</div>
+            <div class="sign-field">Dátum / Pecsét</div>
+        </div>
+        
+        <div class="pdf-footer">
+            <span>Plum ecoMAX 360 — Szerviz Lap | ${pelletName}</span>
+            <span>Oldal 2/2 | ${dateStr}</span>
+        </div>
+    </div>`;
+    
+    return page1 + page2;
+}
+
+function printServiceSheet(pelletType) {
+    const printArea = document.getElementById('printArea');
+    let html = '';
+    
+    if (pelletType === 'ALL') {
+        html += buildPelletPage('FA', 1, 3);
+        html += buildPelletPage('SZALMA', 2, 3);
+        html += buildPelletPage('MIX', 3, 3);
+    } else {
+        html += buildPelletPage(pelletType, 1, 1);
+    }
+    
+    printArea.innerHTML = html;
+    
+    // Kis késleltetés, hogy a DOM frissüljön
+    setTimeout(() => {
+        window.print();
+    }, 200);
+}
+
+// ===================================================================
+
+initServiceData();
+renderMenu("MAIN");
+</script>
+</body>
+</html>
